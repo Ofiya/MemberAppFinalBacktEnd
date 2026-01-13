@@ -156,7 +156,7 @@ userRoutes.post("/reset-link", async (req, res) => {
         resetTokenExpiry: Date.now() + 3600000
     })
 
-    const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+    const resetLink = `http://memapp.cccredemptionwpg.org/reset-password?token=${token}`;
 
     await sendAMail(email, resetLink);
 

@@ -15,12 +15,18 @@ const emailRoute = require("./emailRoute")
 
 
 const app = express();
-const PORT = 3000;
+const PORT = 5000;
 
 
 
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://memapp.cccredemptionwpg.org"
+  ],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/members", memebersRoutes)
