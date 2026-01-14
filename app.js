@@ -23,7 +23,9 @@ const PORT = 5000;
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://memapp.cccredemptionwpg.org"
+    "https://memapp.cccredemptionwpg.org",
+    "https://membe.cccredemptionwpg.org",
+    
   ],
   credentials: true
 }));
@@ -43,9 +45,3 @@ connectDB().then( async () => {
   app.listen(PORT, () => console.log("Server started"));
   console.log("DB STATE:", mongoose.connection.readyState);
 });
-
-
-
-
-
-
