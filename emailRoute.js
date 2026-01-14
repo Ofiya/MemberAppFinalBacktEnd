@@ -9,6 +9,59 @@ const memberModel = require("./models/Members.model")
 
 let emailRoute = express.Router()
 
+
+/**
+ * @openapi
+ * /email:
+ *   post:
+ *     summary: Send email to a member
+ *     description: >
+ *       Sends an email to a specific member identified by UUID.
+ *       Requires a valid JWT token.
+ *     tags:
+ *       - Email
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - uuid
+ *               - subject
+ *               - message
+ *             properties:
+ *               uuid:
+ *                 type: string
+ *                 description: UUID of the member to email
+ *                 example: 3f6c2a10-9b4e-4d7a-9f8a-123456789abc
+ *               subject:
+ *                 type: string
+ *                 example: Important Announcement
+ *               message:
+ *                 type: string
+ *                 example: Please note that the meeting has been rescheduled to Sunday.
+ *     responses:
+ *       200:
+ *         description: Email sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       404:
+ *         description: Member not found
+ *       500:
+ *         description: Email sending failed
+ */
+
 emailRoute.post("/", verifyToken, async (req, res) => {
 
     const thisMember = await memberModel.findOne({uuid:req.body.uuid})

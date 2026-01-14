@@ -11,7 +11,51 @@ let attendanceRoutes = express.Router();
 
 
 
-attendanceRoutes.get("/", async (req, res) => {
+/**
+ * @openapi
+ * /attendance:
+ *   get:
+ *     summary: Get attendance records
+ *     description: Retrieves all attendance records sorted by most recent date. Requires a valid JWT token.
+ *     tags:
+ *       - Attendance
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Attendance records retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     example: 64f5c2a1e1234567890abcd
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                     example: 2024-01-21
+ *                   present:
+ *                     type: object
+ *                     additionalProperties:
+ *                       type: boolean
+ *                     example:
+ *                       uuid-1: true
+ *                       uuid-2: true
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                     example: 2024-01-21T12:30:00Z
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       500:
+ *         description: Server error
+ */
+
+attendanceRoutes.get("/", verifyToken, async (req, res) => {
 
     try {
         const attendances = await attendanceModel.find({})
@@ -26,6 +70,65 @@ attendanceRoutes.get("/", async (req, res) => {
 
 
 // update attendance 
+
+
+/**
+ * @openapi
+ * /attendance:
+ *   patch:
+ *     summary: Create or update attendance by date
+ *     description: >
+ *       Creates a new attendance record for a date if none exists,
+ *       or updates the existing attendance by marking additional members as present.
+ *       Requires a valid JWT token.
+ *     tags:
+ *       - Attendance
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - date
+ *               - presentMembers
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 description: Attendance date
+ *                 example: 2024-01-21
+ *               presentMembers:
+ *                 type: array
+ *                 description: List of member UUIDs marked as present
+ *                 items:
+ *                   type: string
+ *                 example:
+ *                   - 3f6c2a10-9b4e-4d7a-9f8a-123456789abc
+ *                   - 7a9b2c10-4e3d-4a8b-9f12-abcdef123456
+ *     responses:
+ *       201:
+ *         description: Attendance record created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: Newly created attendance record
+ *       200:
+ *         description: Attendance updated or unchanged
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: Updated or existing attendance record
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       500:
+ *         description: Server error
+ */
+
 attendanceRoutes.patch("/", verifyToken, async (req, res) => {
 
     const { date, presentMembers } = req.body;

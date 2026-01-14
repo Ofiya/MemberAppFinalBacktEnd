@@ -7,6 +7,52 @@ const jwt = require("jsonwebtoken")
 let householdRoutes = express.Router()
 
 
+
+/**
+ * @openapi
+ * /household:
+ *   get:
+ *     summary: Get all households
+ *     description: Retrieves a list of all households. Requires a valid JWT token.
+ *     tags:
+ *       - Household
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Households retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     example: 64f4b2a1c1234567890abcd
+ *                   household:
+ *                     type: object
+ *                     properties:
+ *                       first_name:
+ *                         type: string
+ *                         example: John
+ *                       last_name:
+ *                         type: string
+ *                         example: Doe
+ *                   uuid:
+ *                     type: string
+ *                     example: 7a9b2c10-4e3d-4a8b-9f12-abcdef123456
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                     example: 2024-01-10T12:00:00Z
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       500:
+ *         description: Server error
+ */
+
 householdRoutes.get("/", verifyToken, async (req, res) => {
 
     try {

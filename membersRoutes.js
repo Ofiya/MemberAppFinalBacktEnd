@@ -13,7 +13,42 @@ let membersRoutes = express.Router();
 
 
 
-//get one member 
+//get one member
+
+/**
+ * @openapi
+ * /members/detail/{uuid}:
+ *   get:
+ *     summary: Get member details by UUID
+ *     description: Retrieves full details of a single member using their UUID. Requires a valid JWT token.
+ *     tags:
+ *       - Members
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: uuid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique UUID of the member
+ *         example: 3f6c2a10-9b4e-4d7a-9f8a-123456789abc
+ *     responses:
+ *       200:
+ *         description: Member retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: Member object
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       404:
+ *         description: Member not found
+ *       500:
+ *         description: Server error
+ */
+
 membersRoutes.get("/detail/:uuid", verifyToken, async (req, res) => {
     
     const member = await memberModel.findOne({ uuid: req.params.uuid });
@@ -22,7 +57,70 @@ membersRoutes.get("/detail/:uuid", verifyToken, async (req, res) => {
 });
 
 
-// Retrieve all members 
+// Retrieve all members
+
+/**
+ * @openapi
+ * /members:
+ *   get:
+ *     summary: Get members with pagination
+ *     description: >
+ *       Retrieves a paginated list of members.
+ *       Requires a valid JWT token.
+ *     tags:
+ *       - Members
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *         description: Page number
+ *         example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 10
+ *         description: Number of records per page
+ *         example: 10
+ *     responses:
+ *       200:
+ *         description: Members retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   description: Paginated members
+ *                   items:
+ *                     type: object
+ *                 totalPages:
+ *                   type: integer
+ *                   example: 5
+ *                 currentPage:
+ *                   type: integer
+ *                   example: 1
+ *                 totalMembers:
+ *                   type: integer
+ *                   example: 42
+ *                 allMembers:
+ *                   type: array
+ *                   description: All members (unpaginated)
+ *                   items:
+ *                     type: object
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       500:
+ *         description: Server error
+ */
+
 membersRoutes.get("/", verifyToken, async (req, res) => {
 
     const page = Number(req.query.page) || 1;
@@ -53,6 +151,122 @@ membersRoutes.get("/", verifyToken, async (req, res) => {
 
 
 // Add a member
+
+/**
+ * @openapi
+ * /members:
+ *   post:
+ *     summary: Create a new member
+ *     description: >
+ *       Creates a new member record. If the household field includes "new",
+ *       a new household is created in a transaction before creating the member.
+ *       Requires a valid JWT token.
+ *     tags:
+ *       - Members
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - first_name
+ *               - last_name
+ *               - email
+ *               - household
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *                 example: John
+ *               last_name:
+ *                 type: string
+ *                 example: Doe
+ *               dob:
+ *                 type: string
+ *                 format: date
+ *                 example: 1990-05-20
+ *               gender:
+ *                 type: string
+ *                 example: Male
+ *               phone_number:
+ *                 type: string
+ *                 example: "2045551234"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: john.doe@example.com
+ *               immigration_status:
+ *                 type: string
+ *                 example: Permanent Resident
+ *               doc_expiry:
+ *                 type: string
+ *                 format: date
+ *                 example: 2026-12-31
+ *               marital_status:
+ *                 type: string
+ *                 example: Married
+ *               occupation:
+ *                 type: string
+ *                 example: Software Developer
+ *               address:
+ *                 type: string
+ *                 example: 123 Main St, Winnipeg
+ *               household:
+ *                 type: string
+ *                 description: >
+ *                   Use "new" to create a new household or provide an existing household UUID
+ *                 example: new
+ *               rank:
+ *                 type: string
+ *                 example: Member
+ *               date_joined_church:
+ *                 type: string
+ *                 format: date
+ *                 example: 2023-01-15
+ *               assigned_welfare_member:
+ *                 type: string
+ *                 example: welfare_uuid_123
+ *               note:
+ *                 type: string
+ *                 example: Active and participating
+ *               account_status:
+ *                 type: string
+ *                 example: Active
+ *               date_created:
+ *                 type: string
+ *                 format: date-time
+ *                 example: 2024-01-10T10:00:00Z
+ *     responses:
+ *       201:
+ *         description: Member created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Saved
+ *                 data:
+ *                   type: object
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       409:
+ *         description: Member already exists
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Member already exists
+ *       500:
+ *         description: Server error
+ */
+
 membersRoutes.post("/", verifyToken, async (req, res) => {
     
     const existingMember = await memberModel.findOne({email:req.body.email });
@@ -166,6 +380,54 @@ membersRoutes.post("/", verifyToken, async (req, res) => {
 });
 
 
+
+// update member information 
+
+/**
+ * @openapi
+ * /members/{uuid}:
+ *   patch:
+ *     summary: Update a member by UUID
+ *     description: Partially updates a member’s details using their UUID. Requires a valid JWT token.
+ *     tags:
+ *       - Members
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: uuid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique UUID of the member
+ *         example: 3f6c2a10-9b4e-4d7a-9f8a-123456789abc
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             description: Fields to update (partial updates allowed)
+ *             example:
+ *               first_name: John
+ *               last_name: Doe
+ *               phone_number: "1234567890"
+ *               address: 123 Main St
+ *     responses:
+ *       200:
+ *         description: Member updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       404:
+ *         description: Member not found
+ *       400:
+ *         description: Bad request / validation error
+ */
+
 membersRoutes.patch("/:uuid", verifyToken, async (req, res) => {
    
     try {
@@ -175,7 +437,7 @@ membersRoutes.patch("/:uuid", verifyToken, async (req, res) => {
             { $set:req.body },
             { new:true }
         );
-        console.log("UPDATED DOC:", updated);
+        
 
         if (!updated) {
             return res.status(404).json({ message: "Not found" });
@@ -188,6 +450,54 @@ membersRoutes.patch("/:uuid", verifyToken, async (req, res) => {
     }
 });
 
+
+
+// member updates status
+
+/**
+ * @openapi
+ * /members/member_update/{uuid}:
+ *   patch:
+ *     summary: Update a member by UUID
+ *     description: Updates a member’s details using their UUID. Requires a valid JWT token.
+ *     tags:
+ *       - Members
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: uuid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique UUID of the member
+ *         example: 3f6c2a10-9b4e-4d7a-9f8a-123456789abc
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             description: Fields to update (partial updates allowed)
+ *             example:
+ *               first_name: John
+ *               last_name: Doe
+ *               email: john@example.com
+ *               phone_number: "1234567890"
+ *     responses:
+ *       200:
+ *         description: Member updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       401:
+ *         description: Unauthorized (missing or invalid token)
+ *       404:
+ *         description: Member not found
+ *       400:
+ *         description: Bad request / validation error
+ */
 
 membersRoutes.patch("/member_update/:uuid", verifyToken, async (req, res) => {
    
