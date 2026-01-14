@@ -1,6 +1,6 @@
-const express = require("express")
-const Welfare = require("./models/Welfare.models")
-const jwt = require("jsonwebtoken")
+import express from "express";
+import Welfare from "./models/Welfare.models.js";
+import jwt from "jsonwebtoken";
 
 
 
@@ -174,5 +174,5 @@ function verifyToken(request, response, next) {
 }
 
 
-module.exports = welfareRoutes
+export default welfareRoutes;
 

@@ -1,9 +1,10 @@
-const express = require('express');
-const mongoose = require("mongoose")
-const database = require('./db.js')
-const jwt = require("jsonwebtoken")
-require("dotenv").config({path: "./config.env"});
-const attendanceModel = require("./models/attendance.models.js")
+import dotenv from "dotenv"
+dotenv.config({ path: "./config.env" })
+import express from "express";
+import mongoose from "mongoose";
+import database from "./db.js";
+import jwt from "jsonwebtoken";
+import attendanceModel from "./models/attendance.models.js";
 
 
 
@@ -202,4 +203,5 @@ function verifyToken(request, response, next) {
 
 
 
-module.exports = attendanceRoutes
+
+export default attendanceRoutes

@@ -1,9 +1,10 @@
-const express = require('express');
-const mongoose = require("mongoose")
-const jwt = require("jsonwebtoken")
-require("dotenv").config({path: "./config.env"});
-const memberModel = require("./models/Members.model.js")
-const housholdModel = require("./models/Household.models.js")
+import dotenv from "dotenv"
+dotenv.config({path: "./config.env"});
+import express from 'express';
+import mongoose from "mongoose"
+import jwt from "jsonwebtoken"
+import memberModel from "./models/Members.model.js"
+import housholdModel from "./models/Household.models.js"
 
 
 
@@ -541,4 +542,4 @@ function verifyToken(request, response, next) {
 
 
 
-module.exports = membersRoutes
+export default membersRoutes

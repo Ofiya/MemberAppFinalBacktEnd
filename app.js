@@ -6,15 +6,6 @@ import mongoose from "mongoose";
 import {setupSwagger} from "./swagger.js"
 
 
-
-// const cors = require('cors');
-// const memebersRoutes = require('./membersRoutes');
-// const usersRoutes =require("./userRoutes")
-// const welfareRoutes = require("./welfareRoutes")
-// const householdRoutes = require("./householdRoutes")
-// const attendanceRoutes = require("./attendanceRoutes")
-// const emailRoute = require("./emailRoute")
-
 import cors from "cors";
 import membersRoutes from "./membersRoutes.js";
 import usersRoutes from "./userRoutes.js";
@@ -55,8 +46,4 @@ app.listen(process.env.PORT || 3000, () => {
   console.log("DB STATE:", mongoose.connection.readyState);
 });
 
-// connectDB().then( async () => {
-//   app.listen(PORT, () => console.log("Server started"));
-//   console.log("DB STATE:", mongoose.connection.readyState);
-// });
 

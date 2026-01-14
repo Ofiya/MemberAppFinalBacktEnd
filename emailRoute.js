@@ -1,7 +1,7 @@
-const express = require('express');
-const jwt = require("jsonwebtoken")
-const nodemailer = require("nodemailer");
-const memberModel = require("./models/Members.model")
+import express from "express";
+import jwt from "jsonwebtoken"
+import nodemailer from "nodemailer";
+import memberModel from"./models/Members.model.js";
 
 
 
@@ -107,7 +107,7 @@ function verifyToken(request, response, next) {
     })
 }
 
-module.exports = emailRoute
+export default emailRoute;
 
 
 

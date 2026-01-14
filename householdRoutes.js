@@ -1,6 +1,6 @@
-const express = require("express")
-const HouseholdModel = require("./models/Household.models")
-const jwt = require("jsonwebtoken")
+import express from "express"
+import HouseholdModel from "./models/Household.models.js"
+import jwt from "jsonwebtoken"
 
 
 
@@ -84,4 +84,4 @@ function verifyToken(request, response, next) {
 
 
 
-module.exports = householdRoutes
+export default householdRoutes

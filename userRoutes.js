@@ -1,11 +1,12 @@
-const express = require('express');
-const bcrypt = require("bcrypt")
-const jwt = require("jsonwebtoken")
-require("dotenv").config({path: "./config.env"});
-const userModel = require("./models/Users.models")
-const sendAMail = require("./sendAMail")
-const crypto = require("crypto")
-const resTokenModel = require("./models/resetToken.models")
+import dotenv from "dotenv"
+dotenv.config({path: "./config.env"});
+import express from "express";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken"
+import userModel from "./models/Users.models.js"
+import sendAMail from "./sendAMail.js"
+import crypto from "crypto"
+import resTokenModel from "./models/resetToken.models.js"
 
 const SALT_ROUNDS = 6
 
@@ -514,4 +515,4 @@ function verifyToken(request, response, next) {
 
 
 
-module.exports = userRoutes
+export default userRoutes

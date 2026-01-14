@@ -1,7 +1,7 @@
-const mongoose = require("mongoose")
-const { v4: uuidv4 } = require('uuid')
-const Member = require("./Members.model")
-const Service = require("./services.models")
+import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
+import Member from "./Members.model.js";
+import Service from "./services.models.js";
 
 
 
@@ -34,4 +34,4 @@ const attendanceSchema = new mongoose.Schema(
 )
 
 
-module.exports = mongoose.model("Attendance", attendanceSchema)
+export default mongoose.model("Attendance", attendanceSchema);

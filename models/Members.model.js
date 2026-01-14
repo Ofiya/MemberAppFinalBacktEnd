@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
-const { v4: uuidv4 } = require('uuid')
-const Welfare = require("./Welfare.models")
+import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid"
+import  Welfare from "./Welfare.models.js"
 
 const memberSchema = new mongoose.Schema(
     {
@@ -93,4 +93,4 @@ const memberSchema = new mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model("Members", memberSchema);
+export default mongoose.model("Members", memberSchema);
