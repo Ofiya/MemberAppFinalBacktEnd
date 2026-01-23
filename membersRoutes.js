@@ -5,8 +5,8 @@ import mongoose from "mongoose"
 import jwt from "jsonwebtoken"
 import memberModel from "./models/Members.model.js"
 import housholdModel from "./models/Household.models.js"
-
-
+import XLSX from "xlsx"
+import { upload } from "./upload.js";
 
 
 
@@ -382,6 +382,92 @@ membersRoutes.post("/", verifyToken, async (req, res) => {
 
 
 
+// file import 
+membersRoutes.post("/import_excel", verifyToken, upload.single("file"), async (req, res) => {
+    const emptyField = ""
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        
+        const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(worksheet);
+
+        if (data.length === 0) {
+            return res.status(400).json({ message: "Excel file is empty" });
+        }
+
+        
+        const excelData = data
+            .filter(r => r.email)
+            .map(r => ({
+                name:{
+                    first_name: r.first_name,
+                    last_name: r.last_name
+                },
+                email: r.email.toLowerCase().trim(),
+                dob: r.dob,
+                gender: r.gender,
+                marital_status: r.marital_status,
+                household: emptyField,
+                occupation: emptyField,
+                phone_number: r.phone_number,
+                address: r.address,
+                immigration_status: r.immigration_status,
+                doc_expiry: emptyField,
+                rank: r.rank,
+                date_joined_church: r.date_joined_church,
+                note: "Requires update",
+                date_created: new Date(),
+                date_updated: new Date(),
+                assigned_welfare_member: emptyField
+
+            }));
+
+
+        const emails = excelData.map(r => r.email);
+
+
+        // find existing emails 
+        const existingUsers = await memberModel.find(
+            { email: { $in: emails } },
+            { email: 1 }
+        );
+
+
+         const existingEmailSet = new Set(
+            existingUsers.map(u => u.email)
+        );
+
+        
+        const newUsers = excelData.filter(
+            user => !existingEmailSet.has(user.email)
+        );
+        
+        
+
+        
+        if (newUsers.length > 0) {
+            await memberModel.insertMany(newUsers);
+        }
+
+        res.status(201).json({
+            message: "Excel data imported successfully",
+            total: newUsers.length,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+  
+});
+
+
+
 // update member information 
 
 /**
@@ -520,7 +606,6 @@ membersRoutes.patch("/member_update/:uuid", verifyToken, async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 });
-
 
 
 // verify user authentication at every request 

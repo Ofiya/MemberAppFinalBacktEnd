@@ -8,6 +8,7 @@ import sendAMail from "./sendAMail.js"
 import crypto from "crypto"
 import resTokenModel from "./models/resetToken.models.js"
 
+
 const SALT_ROUNDS = 6
 
 let userRoutes = express.Router();
