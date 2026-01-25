@@ -65,6 +65,42 @@ householdRoutes.get("/", verifyToken, async (req, res) => {
 });
 
 
+
+// create welfare members 
+
+householdRoutes.post("/add_household", verifyToken, async (req, res) => {
+
+    const existing = HouseholdModel.findOne({last_name:req.body.last_name})
+    
+    try {
+
+        if(!existing){
+
+            const newMember = await HouseholdModel.create({
+                household:{
+                    first_name: req.body.first_name,
+                    last_name: req.body.last_name,
+                }
+                
+            });
+        }else{
+            return res.status(409).json({
+                message:"Household already exist"
+            })
+        }
+        
+
+        return res.status(201).json({
+            message: "Saved",
+        });
+        
+    } catch (err) {
+        console.error("WRITE ERROR:", err);
+        return res.status(500).json({ message: err.message });
+    }
+});
+
+
 // verify user authentication at every request 
 function verifyToken(request, response, next) {
     const authHeaders = request.headers["authorization"]
