@@ -607,6 +607,13 @@ membersRoutes.patch("/member_update/:uuid", verifyToken, async (req, res) => {
     }
 });
 
+// delete a member
+membersRoutes.post("/delete_member/:uuid", verifyToken, async (req, res) => {
+    
+    const deleteMember = await memberModel.deleteOne({uuid:req.params.uuid})
+    return res.json(deleteMember)
+
+})
 
 // verify user authentication at every request 
 function verifyToken(request, response, next) {
