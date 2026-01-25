@@ -330,7 +330,7 @@ userRoutes.post("/login",async (req, res) => {
 
         if(confirmation){
             
-            const token = jwt.sign({user:user}, process.env.SECRETKEY, {expiresIn: "30m"})
+            const token = jwt.sign({user:user}, process.env.SECRETKEY, {expiresIn: "2h"})
 
             res.json({success: true, token})
 
