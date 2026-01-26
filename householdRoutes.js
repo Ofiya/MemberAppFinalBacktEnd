@@ -70,29 +70,24 @@ householdRoutes.get("/", verifyToken, async (req, res) => {
 
 householdRoutes.post("/add_household", verifyToken, async (req, res) => {
 
-    const existing = HouseholdModel.findOne({last_name:req.body.last_name})
     
     try {
 
-        if(!existing){
-
-            const newMember = await HouseholdModel.create({
-                household:{
-                    first_name: req.body.first_name,
-                    last_name: req.body.last_name,
-                }
-                
-            });
-        }else{
-            return res.status(409).json({
-                message:"Household already exist"
-            })
-        }
         
+        const newMember = await HouseholdModel.create({
 
-        return res.status(201).json({
-            message: "Saved",
+            household:{
+                first_name: req.body.first_name,
+                last_name: req.body.last_name,
+            }
+            
         });
+
+            return res.status(201).json({
+            message: "Saved",
+            data: newMember,
+        });
+       
         
     } catch (err) {
         console.error("WRITE ERROR:", err);
