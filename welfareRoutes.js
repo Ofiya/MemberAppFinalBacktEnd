@@ -74,29 +74,25 @@ let welfareRoutes = express.Router();
 
 welfareRoutes.post("/", verifyToken, async (req, res) => {
 
-    const existing = Welfare.findOne({last_name:req.body.last_name})
-
     try {
-        if(!existing){
+      
 
-            const newMember = await Welfare.create({
-                name:{
-                    
-                    first_name: req.body.first_name,
-                    last_name: req.body.last_name,
-                }
+        const newMember = await Welfare.create({
+            name:{
                 
-            });
-        }else{
-            return res.status(409).json({
-                message:"Household already exist"
-            })
-        }
-
+                first_name: req.body.first_name,
+                last_name: req.body.last_name,
+            }
+            
+        });
+    
         return res.status(201).json({
             message: "Saved",
             data: newMember,
         });
+        
+
+        
         
     } catch (err) {
         console.error("WRITE ERROR:", err);
@@ -183,3 +179,4 @@ function verifyToken(request, response, next) {
 
 
 export default welfareRoutes;
+
