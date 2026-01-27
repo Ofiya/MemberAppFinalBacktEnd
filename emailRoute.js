@@ -81,7 +81,7 @@ emailRoute.post("/", verifyToken, async (req, res) => {
         from: process.env.EMAIL,
         to:thisMember.email,
         subject:req.body.subject,
-        text: req.body.message,
+        html: req.body.html,
     });
 
     res.json({ success: true });
